@@ -1,30 +1,12 @@
 using Xunit;
-using Jering.Javascript.NodeJS;
 using FluentAssertions;
 using System.Threading.Tasks;
 using System.Text.Json;
-using System;
+using TaskRunner;
 
 namespace jsTaskRunner.Test
 {
-    public static class TaskRunner
-    {
-        public static async Task<object?> RunAsync(string javascriptCode, object?[]? args)
-        {
-            string javascriptModule = @"
-                module.exports = (callback, input) => {
-                    var output = {};
-                    "
-                    + javascriptCode + 
-                    @"
-                    callback(null, output);
-                }";
-
-            return await StaticNodeJSService.InvokeFromStringAsync<object>(javascriptModule, args: args);
-        }
-    }
-
-    public class TaskRunnerTest
+    public class JsRunnerTest
     {
         [Fact]
         public async Task When_RunningTaskRunner_Must_ReturnResultCorrectly()
@@ -51,7 +33,7 @@ namespace jsTaskRunner.Test
                 );
 
             // Act
-            var result = await TaskRunner.RunAsync(javascriptCode,args);
+            var result = await JsRunner.RunAsync(javascriptCode,args);
 
             // Assert
             result.Should().NotBeNull();
@@ -62,18 +44,21 @@ namespace jsTaskRunner.Test
         public async Task When_RunningTaskRunner_With_ErrorInJavascript_Must_ThrowError()
         {
             // Arrange            
-            string javascriptCode = @"
+            var javascriptCode = @"
                 a.push();
-                "; // a is not defined
+                ";
+
+            var expectedExceptionMessage = "a is not defined";
 
             var args = new object[] { 1 };
 
             // Act
-            var action = async () => await TaskRunner.RunAsync(javascriptCode, args);
+            var action = async () => await JsRunner.RunAsync(javascriptCode, args);
 
             // Assert
             action.Should()
-                .ThrowAsync<Exception>()
+                .ThrowAsync<JsRunnerException>()
+                .WithMessage(expectedExceptionMessage)
                 .Wait(); 
         }
     }

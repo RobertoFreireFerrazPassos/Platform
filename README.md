@@ -3,8 +3,6 @@
 
 ## next steps
 
-* gRPC to comunicate between jsTaskRunnerApi and Presentation
-
 * Asp.net MVC using Identity 
 
 * Mongodb, control version of document
