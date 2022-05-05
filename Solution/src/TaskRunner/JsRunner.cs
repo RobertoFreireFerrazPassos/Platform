@@ -4,7 +4,7 @@ namespace TaskRunner
 {
     public class JsRunner
     {
-        public static async Task<object?> RunAsync(string javascriptCode, object?[]? args)
+        public static async Task<object?> RunAsync(string javascriptCode, object?[]? args, CancellationToken cancellationToken)
         {
             string javascriptModule = @"
                 module.exports = (callback, input) => {
@@ -17,7 +17,7 @@ namespace TaskRunner
 
             try
             {
-                return await StaticNodeJSService.InvokeFromStringAsync<object>(javascriptModule, args: args);
+                return await StaticNodeJSService.InvokeFromStringAsync<object>(javascriptModule, args: args, cancellationToken : cancellationToken);
             }
             catch (Exception ex)
             {
