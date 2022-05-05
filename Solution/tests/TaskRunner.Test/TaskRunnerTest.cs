@@ -3,6 +3,7 @@ using Jering.Javascript.NodeJS;
 using FluentAssertions;
 using System.Threading.Tasks;
 using System.Text.Json;
+using System;
 
 namespace jsTaskRunner.Test
 {
@@ -12,7 +13,8 @@ namespace jsTaskRunner.Test
         {
             string javascriptModule = @"
                 module.exports = (callback, input) => {
-                    " 
+                    var output = {};
+                    "
                     + javascriptCode + 
                     @"
                     callback(null, output);
@@ -29,7 +31,6 @@ namespace jsTaskRunner.Test
         {
             // Arrange            
             string javascriptCode = @"
-                var output = {};
                 var c = input.x.field.innerField;
                 output.a = c + input.y[0] + input.y[1];
                 output.b = input.y.map((e,i) => c * e );
@@ -55,6 +56,25 @@ namespace jsTaskRunner.Test
             // Assert
             result.Should().NotBeNull();
             result.ToString().Should().BeEquivalentTo(expectedResult.ToString());
+        }
+
+        [Fact]
+        public async Task When_RunningTaskRunner_With_ErrorInJavascript_Must_ThrowError()
+        {
+            // Arrange            
+            string javascriptCode = @"
+                a.push();
+                "; // a is not defined
+
+            var args = new object[] { 1 };
+
+            // Act
+            var action = async () => await TaskRunner.RunAsync(javascriptCode, args);
+
+            // Assert
+            action.Should()
+                .ThrowAsync<Exception>()
+                .Wait(); 
         }
     }
 }
