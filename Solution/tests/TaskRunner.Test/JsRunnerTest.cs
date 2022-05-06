@@ -10,23 +10,17 @@ namespace jsTaskRunner.Test
 {
     public class JsRunnerTest
     {
+        private readonly IJsRunner _sut;
+
+        public JsRunnerTest()
+        {
+            _sut = new JsRunner();
+        }
+
         [Fact]
         public async Task When_RunningTaskRunner_Must_ReturnResultCorrectly()
         {
-            // Arrange            
-            var javascriptCode = @"
-                var c = input.x.field.innerField;
-                output.a = c + input.y[0] + input.y[1];
-                output.b = input.y.map((e,i) => c * e );
-                ";
-
-            var args = new object[] {
-                        new {
-                            x = new { field = new { innerField = 2 } },
-                            y = new[] { 1, 4 }
-                        }
-                    };
-
+            // Arrange
             var expectedResult = JsonSerializer.SerializeToElement(
                 new {
                         a = 7,
@@ -36,8 +30,24 @@ namespace jsTaskRunner.Test
 
             var cancellationTokenSource = new CancellationTokenSource();
 
+            var jsRunnerParams = new JsRunnerParams
+            {
+                JavascriptCode = @"
+                var c = input.x.field.innerField;
+                output.a = c + input.y[0] + input.y[1];
+                output.b = input.y.map((e,i) => c * e );
+                ",
+                Args = new object[] {
+                        new {
+                            x = new { field = new { innerField = 2 } },
+                            y = new[] { 1, 4 }
+                        }
+                    },
+                CancellationToken = cancellationTokenSource.Token
+            };
+
             // Act
-            var result = await JsRunner.RunAsync(javascriptCode,args, cancellationTokenSource.Token);
+            var result = await _sut.RunAsync(jsRunnerParams);
 
             // Assert
             result.Should().NotBeNull();
@@ -49,19 +59,22 @@ namespace jsTaskRunner.Test
         [Fact]
         public async Task When_RunningTaskRunner_With_ErrorInJavascript_Must_ThrowError()
         {
-            // Arrange            
-            var javascriptCode = @"
-                a.push();
-                ";
-
+            // Arrange   
             var expectedExceptionMessage = "a is not defined";
-
-            var args = new object[] { 1 };
 
             var cancellationTokenSource = new CancellationTokenSource();
 
+            var jsRunnerParams = new JsRunnerParams
+            {
+                JavascriptCode = @"
+                    a.push();
+                ",
+                Args = new object[] { 1 },
+                CancellationToken = cancellationTokenSource.Token
+            };
+
             // Act
-            var action = async () => await JsRunner.RunAsync(javascriptCode, args, cancellationTokenSource.Token);
+            var action = async () => await _sut.RunAsync(jsRunnerParams);
 
             // Assert
             action.Should()
@@ -75,21 +88,24 @@ namespace jsTaskRunner.Test
         [Fact]
         public async Task When_CancelRunningTaskRunner_Must_ThrowError()
         {
-            // Arrange            
-            var javascriptCode = @"
-                output = 10;
-                ";
-
-            var args = new object[] { };
-
+            // Arrange  
             var expectedExceptionMessage = "A task was canceled.";
 
             var cancellationTokenSource = new CancellationTokenSource();
 
             cancellationTokenSource.Cancel();
 
+            var jsRunnerParams = new JsRunnerParams
+            {
+                JavascriptCode = @"
+                output = 10;
+                ",
+                Args = new object[] { },
+                CancellationToken = cancellationTokenSource.Token
+            };
+
             // Act
-            var action = async () => await JsRunner.RunAsync(javascriptCode, args, cancellationTokenSource.Token);
+            var action = async () => await _sut.RunAsync(jsRunnerParams);
 
             // Assert
             action.Should()

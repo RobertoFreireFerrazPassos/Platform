@@ -2,22 +2,31 @@
 
 namespace TaskRunner
 {
-    public class JsRunner
+    public class JsRunnerParams
     {
-        public static async Task<object?> RunAsync(string javascriptCode, object?[]? args, CancellationToken cancellationToken)
+        public string JavascriptCode { get; set; }
+
+        public object?[]? Args { get; set; }
+
+        public CancellationToken CancellationToken { get; set; }
+    }   
+
+    public class JsRunner : IJsRunner
+    {
+        public async Task<object?> RunAsync(JsRunnerParams parameters)
         {
             string javascriptModule = @"
                 module.exports = (callback, input) => {
                     var output = {};
                     "
-                    + javascriptCode +
+                    + parameters.JavascriptCode +
                     @"
                     callback(null, output);
                 }";
 
             try
             {
-                return await StaticNodeJSService.InvokeFromStringAsync<object>(javascriptModule, args: args, cancellationToken : cancellationToken);
+                return await StaticNodeJSService.InvokeFromStringAsync<object>(javascriptModule, args: parameters.Args, cancellationToken : parameters.CancellationToken);
             }
             catch (Exception ex)
             {
