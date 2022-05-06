@@ -2,6 +2,6 @@
 {
     public interface IClientHttp
     {
-        public Task<HttpResponseMessage> GetAsync(string uri);
+        public Task<object> GetAsync(string uri);
     }
 }

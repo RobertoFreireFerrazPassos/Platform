@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -14,11 +15,11 @@ namespace TaskRunner.Test
 
         private readonly Mock<IClientHttp> _client = new Mock<IClientHttp>();
 
-        private readonly Mock<IJsRunner> _jsRunner = new Mock<IJsRunner>();
+        private readonly IJsRunner _jsRunner = new JsRunner();
 
         public HttpOrchestratorRunnerTest() 
         {
-            _sut = new HttpOrchestratorRunner(_client.Object, _jsRunner.Object);
+            _sut = new HttpOrchestratorRunner(_client.Object, _jsRunner);
         }
 
         [Fact]
@@ -32,33 +33,21 @@ namespace TaskRunner.Test
                 Uri = "https://jsonplaceholder.typicode.com/posts/2"
             };
 
-            var responseContent = "{\"userId\":99,\"id\":2}";
+            var responseContent = JsonSerializer.Deserialize<object>("{\"userId\":99,\"id\":2}");
 
-            var clientResponse = new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                Content = new StringContent(responseContent)
-            };
-
-            var expectedResult = 99 as object;
+            var expectedResult = 99;
 
             _client.Setup(c => c.GetAsync(It.IsAny<string>()))
-               .Returns(Task.FromResult(clientResponse))
-               .Verifiable();
-
-            _jsRunner.Setup(c => c.RunAsync(It.IsAny<JsRunnerParams>()))
-               .Returns(Task.FromResult(expectedResult))
+               .Returns(Task.FromResult(responseContent))
                .Verifiable();
 
             // Act
             var result = _sut.Run(parameters);
 
             // Assert
-            result.Should().Be(99);
+            result.ToString().Should().Be(expectedResult.ToString());
 
             _client.Verify(c => c.GetAsync(It.IsAny<string>()), Times.Once);
-
-            _jsRunner.Verify(j => j.RunAsync(It.IsAny<JsRunnerParams>()), Times.Once);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Client;
-using System.Text.Json;
 
 namespace TaskRunner
 {
@@ -27,8 +26,6 @@ namespace TaskRunner
         {
             var response = _clientHttp.GetAsync(parameters.Uri).Result;
 
-            var result = JsonSerializer.Deserialize<object>(response.Content.ReadAsStream());
-
             var cancellationTokenSource = new CancellationTokenSource();
 
             var jsRunnerParams = new JsRunnerParams
@@ -36,7 +33,7 @@ namespace TaskRunner
                 JavascriptCode = parameters.JavascriptCode,
                 Args = new object[] {
                         new {
-                            response = result
+                            response = response
                         }
                     },
 
