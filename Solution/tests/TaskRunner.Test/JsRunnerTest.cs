@@ -22,10 +22,11 @@ namespace jsTaskRunner.Test
         {
             // Arrange
             var expectedResult = JsonSerializer.SerializeToElement(
-                new {
-                        a = 7,
-                        b = new[] { 2, 8 }
-                    }
+                new
+                {
+                    a = 7,
+                    b = new[] { 2, 8 }
+                }
                 );
 
             var cancellationTokenSource = new CancellationTokenSource();
@@ -99,6 +100,43 @@ namespace jsTaskRunner.Test
             {
                 JavascriptCode = @"
                 output = 10;
+                ",
+                Args = new object[] { },
+                CancellationToken = cancellationTokenSource.Token
+            };
+
+            // Act
+            var action = async () => await _sut.RunAsync(jsRunnerParams);
+
+            // Assert
+            action.Should()
+                .ThrowAsync<Exception>()
+                .WithMessage(expectedExceptionMessage)
+                .Wait();
+
+            cancellationTokenSource.Dispose();
+        }
+
+        [Fact]
+        public async Task When_RunningTaskRunnerTakesTooLong_Must_Cancel()
+        {
+            // Arrange  
+            var expectedExceptionMessage = "The operation was canceled.";
+
+            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+
+            var jsRunnerParams = new JsRunnerParams
+            {
+                JavascriptCode = @"
+                    function sleep(milliseconds) {
+                      const date = Date.now();
+                      let currentDate = null;
+                      do {
+                        currentDate = Date.now();
+                      } while (currentDate - date < milliseconds);
+                    }
+                    sleep(4000);
+                    output = 10;
                 ",
                 Args = new object[] { },
                 CancellationToken = cancellationTokenSource.Token
