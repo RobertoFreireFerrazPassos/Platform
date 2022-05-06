@@ -6,6 +6,8 @@ namespace TaskRunner
     {
         public string JavascriptCode { get; set; }
 
+        public string JavascriptCodeIdentifier { get; set; }
+
         public object?[]? Args { get; set; }
 
         public CancellationToken CancellationToken { get; set; }
@@ -26,7 +28,12 @@ namespace TaskRunner
 
             try
             {
-                return await StaticNodeJSService.InvokeFromStringAsync<object>(javascriptModule, args: parameters.Args, cancellationToken : parameters.CancellationToken);
+                return await StaticNodeJSService.InvokeFromStringAsync<object>(
+                        javascriptModule,
+                        parameters.JavascriptCodeIdentifier,
+                        args: parameters.Args,
+                        cancellationToken: parameters.CancellationToken
+                    );
             }
             catch (Exception ex)
             {

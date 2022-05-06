@@ -34,10 +34,11 @@ namespace jsTaskRunner.Test
             var jsRunnerParams = new JsRunnerParams
             {
                 JavascriptCode = @"
-                var c = input.x.field.innerField;
-                output.a = c + input.y[0] + input.y[1];
-                output.b = input.y.map((e,i) => c * e );
+                    var c = input.x.field.innerField;
+                    output.a = c + input.y[0] + input.y[1];
+                    output.b = input.y.map((e,i) => c * e );
                 ",
+                JavascriptCodeIdentifier = "CorrectJavascript",
                 Args = new object[] {
                         new {
                             x = new { field = new { innerField = 2 } },
@@ -70,6 +71,7 @@ namespace jsTaskRunner.Test
                 JavascriptCode = @"
                     a.push();
                 ",
+                JavascriptCodeIdentifier = "ErrorInJavascript",
                 Args = new object[] { 1 },
                 CancellationToken = cancellationTokenSource.Token
             };
@@ -99,8 +101,9 @@ namespace jsTaskRunner.Test
             var jsRunnerParams = new JsRunnerParams
             {
                 JavascriptCode = @"
-                output = 10;
+                    output = 10;
                 ",
+                JavascriptCodeIdentifier = "TaskCanceledJavascript",
                 Args = new object[] { },
                 CancellationToken = cancellationTokenSource.Token
             };
@@ -138,6 +141,7 @@ namespace jsTaskRunner.Test
                     sleep(4000);
                     output = 10;
                 ",
+                JavascriptCodeIdentifier = "OperationCanceledJavascript",
                 Args = new object[] { },
                 CancellationToken = cancellationTokenSource.Token
             };
@@ -150,6 +154,39 @@ namespace jsTaskRunner.Test
                 .ThrowAsync<Exception>()
                 .WithMessage(expectedExceptionMessage)
                 .Wait();
+
+            cancellationTokenSource.Dispose();
+        }
+
+        [Fact]
+        public async Task When_RunningTaskRunner_Must_BeAbleToRunJavaScriptFile()
+        {
+            // Arrange
+            var expectedResult = JsonSerializer.SerializeToElement(
+                    new
+                    {
+                        result = "chocolate"
+                    }
+                );
+
+            var cancellationTokenSource = new CancellationTokenSource();
+
+            var jsRunnerParams = new JsRunnerParams
+            {
+                JavascriptCode = @"
+                    var flavours = require('./test.js');
+                    output.result = flavours[0]
+                ",
+                Args = new object[] {},
+                CancellationToken = cancellationTokenSource.Token
+            };
+
+            // Act
+            var result = await _sut.RunAsync(jsRunnerParams);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.ToString().Should().Be(expectedResult.ToString());
 
             cancellationTokenSource.Dispose();
         }

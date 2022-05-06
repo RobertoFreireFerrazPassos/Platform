@@ -7,6 +7,8 @@ namespace TaskRunner
         public string Uri { get; set; }
 
         public string JavascriptCode { get; set; }
+
+        public string JavascriptCodeIdentifier { get; set; }        
     }
 
     public class HttpGetOrchestratorRunnerParams : HttpOrchestratorRunnerParams
@@ -45,7 +47,7 @@ namespace TaskRunner
                             response = response
                         }
                     },
-
+                JavascriptCodeIdentifier = parameters.JavascriptCodeIdentifier,
                 CancellationToken = cancellationTokenSource.Token
             };
 

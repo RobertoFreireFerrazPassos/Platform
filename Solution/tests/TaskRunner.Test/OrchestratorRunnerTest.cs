@@ -28,6 +28,7 @@ namespace TaskRunner.Test
                 JavascriptCode = @"
                     output = input.response.userId;
                 ",
+                JavascriptCodeIdentifier = "HttpGetOrchestratorRunnerExample",
                 Uri = "https://jsonplaceholder.typicode.com/posts/2"
             };
 

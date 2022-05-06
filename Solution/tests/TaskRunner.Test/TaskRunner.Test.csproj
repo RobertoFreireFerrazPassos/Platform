@@ -26,4 +26,10 @@
     <ProjectReference Include="..\..\src\TaskRunner\TaskRunner.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="test.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
