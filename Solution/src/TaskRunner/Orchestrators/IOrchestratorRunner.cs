@@ -2,6 +2,6 @@
 {
     public interface IOrchestratorRunner
     {
-        public object Run(HttpOrchestratorRunnerParams parameters);
+        public object Get(HttpGetOrchestratorRunnerParams parameters);
     }
 }

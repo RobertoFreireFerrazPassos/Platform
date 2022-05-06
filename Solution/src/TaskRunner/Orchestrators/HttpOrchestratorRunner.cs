@@ -9,6 +9,10 @@ namespace TaskRunner
         public string JavascriptCode { get; set; }
     }
 
+    public class HttpGetOrchestratorRunnerParams : HttpOrchestratorRunnerParams
+    {
+    }
+
     public class HttpOrchestratorRunner : IOrchestratorRunner
     {
         private readonly IClientHttp _clientHttp;
@@ -22,10 +26,15 @@ namespace TaskRunner
             _jsRunner = jsRunner;
         }
 
-        public object Run(HttpOrchestratorRunnerParams parameters)
+        public object Get(HttpGetOrchestratorRunnerParams parameters)
         {
-            var response = _clientHttp.GetAsync(parameters.Uri).Result;
+            var response = _clientHttp.GetAsync(parameters.Uri).Result;            
 
+            return RunJs(parameters, response);
+        }
+
+        private object RunJs(HttpOrchestratorRunnerParams parameters, object? response)
+        {
             var cancellationTokenSource = new CancellationTokenSource();
 
             var jsRunnerParams = new JsRunnerParams

@@ -25,7 +25,7 @@ namespace TaskRunner.Test
         [Fact]
         public async Task When_RunningHttpOrchestratorRunner_Must_GetCorrectResult()
         {
-            var parameters = new HttpOrchestratorRunnerParams()
+            var parameters = new HttpGetOrchestratorRunnerParams()
             {
                 JavascriptCode = @"
                     output = input.response.userId;
@@ -42,7 +42,7 @@ namespace TaskRunner.Test
                .Verifiable();
 
             // Act
-            var result = _sut.Run(parameters);
+            var result = _sut.Get(parameters);
 
             // Assert
             result.ToString().Should().Be(expectedResult.ToString());
