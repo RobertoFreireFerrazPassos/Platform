@@ -297,6 +297,7 @@ namespace jsTaskRunner.Test
         [Fact]
         public async Task Must_BeAbleToMakePostHTTPCalls_From_HttpRequestLibrary()
         {
+            // Arrange
             var jsRunnerParams = new JsRunnerParams
             {
                 JavascriptCode = @"
@@ -328,6 +329,45 @@ namespace jsTaskRunner.Test
 
             // Assert
             result.Should().NotBeNull();
+        }
+
+        [Fact]
+        public async Task Must_BeAbleToRunSyncInAsyncFunction()
+        {
+            // Arrange
+            var expectedResult = JsonSerializer.SerializeToElement(
+                    new
+                    {
+                        result = 12
+                    }
+                );
+
+            var jsRunnerParams = new JsRunnerParams
+            {
+                JavascriptCode = @"
+                    module.exports = async (input) => {
+                         var output = {} 
+                         var result = input.number * 4;
+                         return output = {
+                            result : result
+                        };
+                    }
+                ",
+                JavascriptCodeIdentifier = "SyncInAsyncExample",
+                Args = new object[] {
+                        new {
+                            number = 3
+                        }
+                    }
+            };
+
+            // Act
+            var result = await _sut.RunAsync(jsRunnerParams);
+
+            // Assert
+            result.Should().NotBeNull();
+
+            result.ToString().Should().Be(expectedResult.ToString());
         }
     }
 }
