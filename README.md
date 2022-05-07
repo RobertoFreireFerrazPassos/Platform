@@ -1,7 +1,21 @@
 # Platform
 
+## Flow
 
-## next steps
+Saving new javascript (js)
+
+-> Validate js
+
+-> Save in database by organization
+
+Running js
+
+-> Get from database
+
+-> Run in backend
+
+
+# next steps
 
 * Asp.net MVC using Identity 
 
@@ -11,7 +25,7 @@
 
 * Ace editor [1]
 
-## Notes
+# Notes
 
 Run docker compose either by visual studio or by command line
 
