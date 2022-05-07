@@ -17,19 +17,10 @@ namespace TaskRunner
     {
         public async Task<object?> RunAsync(JsRunnerParams parameters)
         {
-            string javascriptModule = @"
-                module.exports = (callback, input) => {
-                    var output = {};
-                    "
-                    + parameters.JavascriptCode +
-                    @"
-                    callback(null, output);
-                }";
-
             try
             {
                 return await StaticNodeJSService.InvokeFromStringAsync<object>(
-                        javascriptModule,
+                        parameters.JavascriptCode,
                         parameters.JavascriptCodeIdentifier,
                         args: parameters.Args,
                         cancellationToken: parameters.CancellationToken
