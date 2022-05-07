@@ -21,8 +21,6 @@ Running js
 
 * Mongodb, control version of document
 
-* TDD
-
 * Ace editor [1]
 
 # Notes
