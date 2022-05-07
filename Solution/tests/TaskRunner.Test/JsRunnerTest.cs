@@ -11,6 +11,8 @@ namespace jsTaskRunner.Test
     {
         private readonly IJsRunner _sut;
 
+        private readonly int _timeOut = 3;
+
         private string EncapsulteJavascriptCodeInModule(string javascriptCode)
         {
             return @"
@@ -25,7 +27,7 @@ namespace jsTaskRunner.Test
 
         public JsRunnerTest()
         {
-            _sut = new JsRunner();
+            _sut = new JsRunner(_timeOut);
         }
 
         [Fact]
@@ -93,10 +95,8 @@ namespace jsTaskRunner.Test
         [Fact]
         public async Task When_TakesTooLong_Must_Cancel()
         {
-            // Arrange  
-            var timeOut = 3;
-
-            var expectedExceptionMessage = $"The operation was canceled. It took more than {timeOut} seconds";
+            // Arrange
+            var expectedExceptionMessage = $"The operation was canceled. It took more than {_timeOut} seconds";
 
             var jsRunnerParams = new JsRunnerParams
             {
@@ -112,8 +112,7 @@ namespace jsTaskRunner.Test
                     output = 10;
                 "),
                 JavascriptCodeIdentifier = "OperationCanceledJavascript",
-                Args = new object[] { },
-                TimeOut = timeOut
+                Args = new object[] { }
             };
 
             // Act
