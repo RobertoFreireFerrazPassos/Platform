@@ -65,6 +65,7 @@ namespace jsTaskRunner.Test
 
             // Assert
             result.Should().NotBeNull();
+
             result.ToString().Should().BeEquivalentTo(expectedResult.ToString());
 
             cancellationTokenSource.Dispose();
@@ -198,6 +199,7 @@ namespace jsTaskRunner.Test
 
             // Assert
             result.Should().NotBeNull();
+
             result.ToString().Should().Be(expectedResult.ToString());
 
             cancellationTokenSource.Dispose();
@@ -208,6 +210,8 @@ namespace jsTaskRunner.Test
         {
             // Arrange
             var cancellationTokenSource = new CancellationTokenSource();
+
+            var expectedResult = "{\"userId\":1,\"id\":2,\"title\":\"qui est esse\",\"body\":\"est rerum tempore vitae\\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\\nqui aperiam non debitis possimus qui neque nisi nulla\"}";
 
             var jsRunnerParams = new JsRunnerParams
             {
@@ -261,6 +265,8 @@ namespace jsTaskRunner.Test
 
             // Assert
             result.Should().NotBeNull();
+
+            result.ToString().Should().Be(expectedResult);
 
             cancellationTokenSource.Dispose();
         }
