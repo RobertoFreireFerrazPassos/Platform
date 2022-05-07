@@ -35,13 +35,11 @@ namespace jsTaskRunner.Test
             // Arrange
             var expectedResult = JsonSerializer.SerializeToElement(
                 new
-                {
-                    a = 7,
-                    b = new[] { 2, 8 }
-                }
+                    {
+                        a = 7,
+                        b = new[] { 2, 8 }
+                    }
                 );
-
-            var cancellationTokenSource = new CancellationTokenSource();
 
             var jsRunnerParams = new JsRunnerParams
             {
@@ -56,8 +54,7 @@ namespace jsTaskRunner.Test
                             x = new { field = new { innerField = 2 } },
                             y = new[] { 1, 4 }
                         }
-                    },
-                CancellationToken = cancellationTokenSource.Token
+                    }
             };
 
             // Act
@@ -67,8 +64,6 @@ namespace jsTaskRunner.Test
             result.Should().NotBeNull();
 
             result.ToString().Should().BeEquivalentTo(expectedResult.ToString());
-
-            cancellationTokenSource.Dispose();
         }
 
         [Fact]
@@ -77,16 +72,13 @@ namespace jsTaskRunner.Test
             // Arrange   
             var expectedExceptionMessage = "a is not defined";
 
-            var cancellationTokenSource = new CancellationTokenSource();
-
             var jsRunnerParams = new JsRunnerParams
             {
                 JavascriptCode = EncapsulteJavascriptCodeInModule(@"
                     a.push();
                 "),
                 JavascriptCodeIdentifier = "ErrorInJavascript",
-                Args = new object[] { 1 },
-                CancellationToken = cancellationTokenSource.Token
+                Args = new object[] { 1 }
             };
 
             // Act
@@ -97,40 +89,6 @@ namespace jsTaskRunner.Test
                 .ThrowAsync<JsRunnerException>()
                 .WithMessage(expectedExceptionMessage)
                 .Wait();
-
-            cancellationTokenSource.Dispose();
-        }
-
-        [Fact]
-        public async Task When_CancelRunningTaskRunner_Must_ThrowError()
-        {
-            // Arrange  
-            var expectedExceptionMessage = "A task was canceled.";
-
-            var cancellationTokenSource = new CancellationTokenSource();
-
-            cancellationTokenSource.Cancel();
-
-            var jsRunnerParams = new JsRunnerParams
-            {
-                JavascriptCode = EncapsulteJavascriptCodeInModule(@"
-                    output = 10;
-                "),
-                JavascriptCodeIdentifier = "TaskCanceledJavascript",
-                Args = new object[] { },
-                CancellationToken = cancellationTokenSource.Token
-            };
-
-            // Act
-            var action = async () => await _sut.RunAsync(jsRunnerParams);
-
-            // Assert
-            action.Should()
-                .ThrowAsync<Exception>()
-                .WithMessage(expectedExceptionMessage)
-                .Wait();
-
-            cancellationTokenSource.Dispose();
         }
 
         [Fact]
@@ -138,8 +96,6 @@ namespace jsTaskRunner.Test
         {
             // Arrange  
             var expectedExceptionMessage = "The operation was canceled.";
-
-            var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(2));
 
             var jsRunnerParams = new JsRunnerParams
             {
@@ -151,12 +107,11 @@ namespace jsTaskRunner.Test
                         currentDate = Date.now();
                       } while (currentDate - date < milliseconds);
                     }
-                    sleep(4000);
+                    sleep(12000);
                     output = 10;
                 "),
                 JavascriptCodeIdentifier = "OperationCanceledJavascript",
-                Args = new object[] { },
-                CancellationToken = cancellationTokenSource.Token
+                Args = new object[] { }
             };
 
             // Act
@@ -167,8 +122,6 @@ namespace jsTaskRunner.Test
                 .ThrowAsync<Exception>()
                 .WithMessage(expectedExceptionMessage)
                 .Wait();
-
-            cancellationTokenSource.Dispose();
         }
 
         [Fact]
@@ -182,8 +135,6 @@ namespace jsTaskRunner.Test
                     }
                 );
 
-            var cancellationTokenSource = new CancellationTokenSource();
-
             var jsRunnerParams = new JsRunnerParams
             {
                 JavascriptCode = EncapsulteJavascriptCodeInModule(@"
@@ -191,7 +142,7 @@ namespace jsTaskRunner.Test
                     output.result = flavours[0]
                 "),
                 Args = new object[] {},
-                CancellationToken = cancellationTokenSource.Token
+                JavascriptCodeIdentifier = "JavascriptFileExample"
             };
 
             // Act
@@ -201,16 +152,12 @@ namespace jsTaskRunner.Test
             result.Should().NotBeNull();
 
             result.ToString().Should().Be(expectedResult.ToString());
-
-            cancellationTokenSource.Dispose();
         }
 
         [Fact]
         public async Task When_RunningTaskRunner_Must_BeAbleToMakeHTTPCalls()
         {
             // Arrange
-            var cancellationTokenSource = new CancellationTokenSource();
-
             var expectedResult = "{\"userId\":1,\"id\":2,\"title\":\"qui est esse\",\"body\":\"est rerum tempore vitae\\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\\nqui aperiam non debitis possimus qui neque nisi nulla\"}";
 
             var jsRunnerParams = new JsRunnerParams
@@ -256,8 +203,8 @@ namespace jsTaskRunner.Test
                             });
                         }   
                 ",
-                Args = new object[] { },
-                CancellationToken = cancellationTokenSource.Token
+                JavascriptCodeIdentifier = "HttpCallJavascriptExample",
+                Args = new object[] { }
             };
 
             // Act
@@ -267,8 +214,6 @@ namespace jsTaskRunner.Test
             result.Should().NotBeNull();
 
             result.ToString().Should().Be(expectedResult);
-
-            cancellationTokenSource.Dispose();
         }
     }
 }
