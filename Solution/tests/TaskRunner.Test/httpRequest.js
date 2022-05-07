@@ -22,6 +22,7 @@ module.exports = async (params) => {
                 resolve(body);
             });
         });
+
         // reject on request error
         req.on('error', function (err) {
             reject(err);

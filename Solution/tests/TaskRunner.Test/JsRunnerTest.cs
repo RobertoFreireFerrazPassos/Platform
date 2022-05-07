@@ -292,5 +292,43 @@ namespace jsTaskRunner.Test
 
             result.ToString().Should().Be(expectedResult.ToString());
         }
+
+        [Fact]
+        public async Task Must_BeAbleToMakePostHTTPCalls_From_HttpRequestLibrary()
+        {
+            var jsRunnerParams = new JsRunnerParams
+            {
+                JavascriptCode = @"
+                    module.exports = async () => {
+                        var httpRequest = require('./httpRequest.js');
+
+                        var params = {
+                            host: 'jsonplaceholder.typicode.com',
+                            port: 80,
+                            method: 'POST',
+                            body: JSON.stringify({
+                                title: 'foo',
+                                body: 'bar',
+                                userId: 1,
+                              }),
+                            path: '/posts',
+                            headers: {
+                                'Content-type': 'application/json; charset=UTF-8',
+                              },
+                        };
+
+                         return await httpRequest(params);
+                    }
+                ",
+                JavascriptCodeIdentifier = "HttpPostCallJavascriptFromHttpRequestLibraryExample",
+                Args = new object[] { }
+            };
+
+            // Act
+            var result = await _sut.RunAsync(jsRunnerParams);
+
+            // Assert
+            result.Should().NotBeNull();
+        }
     }
 }
