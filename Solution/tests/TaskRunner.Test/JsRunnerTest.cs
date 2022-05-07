@@ -3,7 +3,6 @@ using FluentAssertions;
 using System.Threading.Tasks;
 using System.Text.Json;
 using TaskRunner;
-using System;
 
 namespace jsTaskRunner.Test
 {

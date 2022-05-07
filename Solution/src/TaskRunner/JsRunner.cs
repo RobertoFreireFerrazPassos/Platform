@@ -1,13 +1,10 @@
 ﻿using Jering.Javascript.NodeJS;
+using TaskRunner.Domain;
 
 namespace TaskRunner
 {
-    public class JsRunnerParams
+    public class JsRunnerParams : JsFile
     {
-        public string JavascriptCode { get; set; }
-
-        public string JavascriptCodeIdentifier { get; set; }
-
         public object?[]? Args { get; set; }
     }   
 
