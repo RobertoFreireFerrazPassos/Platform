@@ -29,6 +29,7 @@ namespace TaskRunner.Test
         [InlineData("require()", true)]
         [InlineData("var=1; Functioneval(\"text\")", true)]
         [InlineData("var=1; Functioneval(2) Functioneval(param)", true)]
+        [InlineData("var=1; require('./httpRequest.js');", true)]
         [InlineData("var=1; require('./test.js')", true)]
         [InlineData("var=1; require('./test.js') require('./s.js') require('./n.js')", true)]
         [InlineData("var=1; require(\"./test.js\")", true)]

@@ -29,7 +29,12 @@ namespace TaskRunner.Domain
 
                 foreach (Match match in matches)
                 {
-                    list.Add(match.Value);
+                    var item = match.Value
+                        .Replace("require(", "")
+                        .Replace("\'", "")
+                        .Replace("\"", "");
+                    item = item.Remove(item.Length -1);
+                    list.Add(item);
                 }
 
                 if (list.Count == 0)
@@ -62,7 +67,7 @@ namespace TaskRunner.Domain
                       "worker_threads", "zlib"
                     };
 
-                return !list.Any(i => forbiddenModules.Exists(m => i.Contains(m)));
+                return !list.Any(i => forbiddenModules.Exists(m => i == m));
             }
 
             bool ValidateAllEvals()
