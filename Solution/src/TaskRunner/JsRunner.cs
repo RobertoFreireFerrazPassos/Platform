@@ -1,5 +1,4 @@
 ﻿using Jering.Javascript.NodeJS;
-using System.Threading;
 
 namespace TaskRunner
 {
@@ -18,7 +17,9 @@ namespace TaskRunner
         {
             var cancellationTokenSource = new CancellationTokenSource();
 
-            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(10));
+            var timeOut = 10;
+
+            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(timeOut));
 
             try
             {
@@ -28,6 +29,14 @@ namespace TaskRunner
                         args: parameters.Args,
                         cancellationToken: cancellationTokenSource.Token
                     );
+            }
+            catch (TaskCanceledException ex)
+            {
+                var exceptionMessage = RemoveStringAfter(ex.Message, "ReferenceError:").TrimEnd();
+
+                var canceledExceptionMessage = $" It tooks more than {timeOut} seconds";
+
+                throw new JsRunnerException(exceptionMessage + canceledExceptionMessage);
             }
             catch (Exception ex)
             {

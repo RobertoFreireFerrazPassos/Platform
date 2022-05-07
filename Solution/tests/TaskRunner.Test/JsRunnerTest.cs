@@ -3,7 +3,6 @@ using FluentAssertions;
 using System.Threading.Tasks;
 using System.Text.Json;
 using TaskRunner;
-using System.Threading;
 using System;
 
 namespace jsTaskRunner.Test
@@ -95,7 +94,7 @@ namespace jsTaskRunner.Test
         public async Task When_TakesTooLong_Must_Cancel()
         {
             // Arrange  
-            var expectedExceptionMessage = "The operation was canceled.";
+            var expectedExceptionMessage = "The operation was canceled. It tooks more than 10 seconds";
 
             var jsRunnerParams = new JsRunnerParams
             {
@@ -119,7 +118,7 @@ namespace jsTaskRunner.Test
 
             // Assert
             action.Should()
-                .ThrowAsync<Exception>()
+                .ThrowAsync<JsRunnerException>()
                 .WithMessage(expectedExceptionMessage)
                 .Wait();
         }
