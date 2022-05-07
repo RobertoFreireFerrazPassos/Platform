@@ -23,7 +23,7 @@ module.exports = async (params) => {
             });
         });
 
-        if (params.method == 'POST')
+        if (['POST', 'PUT', 'PATCH'].includes(params.method))
         {
             req.write(JSON.stringify(params.body));
         }
