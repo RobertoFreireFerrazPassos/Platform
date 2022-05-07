@@ -203,7 +203,7 @@ namespace jsTaskRunner.Test
                             });
                         }   
                 ",
-                JavascriptCodeIdentifier = "HttpCallJavascriptExample",
+                JavascriptCodeIdentifier = "HttpCallAsyncJavascriptExample",
                 Args = new object[] { }
             };
 
@@ -238,7 +238,7 @@ namespace jsTaskRunner.Test
                         return httpRequest(params);
                     }
                 ",
-                JavascriptCodeIdentifier = "HttpCallJavascriptExample",
+                JavascriptCodeIdentifier = "HttpCallAsyncJavascriptFromHttpRequestLibraryExample",
                 Args = new object[] { }
             };
 
@@ -249,6 +249,48 @@ namespace jsTaskRunner.Test
             result.Should().NotBeNull();
 
             result.ToString().Should().Be(expectedResult);
+        }
+
+        [Fact]
+        public async Task Must_BeAbleToMakeHTTPCalls_From_HttpRequestLibrary()
+        {
+            // Arrange
+            var expectedResult = JsonSerializer.SerializeToElement(
+                    new
+                    {
+                        result = "qui est esse"
+                    }
+                );
+
+            var jsRunnerParams = new JsRunnerParams
+            {
+                JavascriptCode = @"
+                    module.exports = async () => {
+                        var httpRequest = require('./httpRequest.js');
+
+                        var params = {
+                            host: 'jsonplaceholder.typicode.com',
+                            port: 80,
+                            method: 'GET',
+                            path: '/posts/2'
+                        };
+
+                         var result = await httpRequest(params);
+
+                         return { result : result.title };
+                    }
+                ",
+                JavascriptCodeIdentifier = "HttpCallJavascriptFromHttpRequestLibraryExample",
+                Args = new object[] { }
+            };
+
+            // Act
+            var result = await _sut.RunAsync(jsRunnerParams);
+
+            // Assert
+            result.Should().NotBeNull();
+
+            result.ToString().Should().Be(expectedResult.ToString());
         }
     }
 }
