@@ -27,6 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="httpRequest.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="test.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

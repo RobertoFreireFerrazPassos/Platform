@@ -39,6 +39,7 @@ namespace TaskRunner
             {
                 cancellationTokenSource.Dispose();
             }
+
             string RemoveStringAfter(string text, string delimiter) {
                 int index = text.LastIndexOf(delimiter);
 

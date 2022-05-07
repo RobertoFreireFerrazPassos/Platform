@@ -30,7 +30,7 @@ namespace jsTaskRunner.Test
         }
 
         [Fact]
-        public async Task When_RunningTaskRunner_Must_ReturnResultCorrectly()
+        public async Task Must_ReturnResultCorrectly()
         {
             // Arrange
             var expectedResult = JsonSerializer.SerializeToElement(
@@ -67,7 +67,7 @@ namespace jsTaskRunner.Test
         }
 
         [Fact]
-        public async Task When_RunningTaskRunner_With_ErrorInJavascript_Must_ThrowError()
+        public async Task Given_ErrorInJavascript_Must_ThrowError()
         {
             // Arrange   
             var expectedExceptionMessage = "a is not defined";
@@ -92,7 +92,7 @@ namespace jsTaskRunner.Test
         }
 
         [Fact]
-        public async Task When_RunningTaskRunnerTakesTooLong_Must_Cancel()
+        public async Task When_TakesTooLong_Must_Cancel()
         {
             // Arrange  
             var expectedExceptionMessage = "The operation was canceled.";
@@ -125,7 +125,7 @@ namespace jsTaskRunner.Test
         }
 
         [Fact]
-        public async Task When_RunningTaskRunner_Must_BeAbleToRunJavaScriptFile()
+        public async Task Must_BeAbleToRunJavaScriptFile()
         {
             // Arrange
             var expectedResult = JsonSerializer.SerializeToElement(
@@ -155,7 +155,7 @@ namespace jsTaskRunner.Test
         }
 
         [Fact]
-        public async Task When_RunningTaskRunner_Must_BeAbleToMakeHTTPCalls()
+        public async Task Must_BeAbleToMakeHTTPCallsAsync()
         {
             // Arrange
             var expectedResult = "{\"userId\":1,\"id\":2,\"title\":\"qui est esse\",\"body\":\"est rerum tempore vitae\\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\\nqui aperiam non debitis possimus qui neque nisi nulla\"}";
@@ -163,7 +163,7 @@ namespace jsTaskRunner.Test
             var jsRunnerParams = new JsRunnerParams
             {
                 JavascriptCode = @"
-                    module.exports = async (arg1, arg2) => {
+                    module.exports = async () => {
                         var http = require('http');
 
                         var params = {
@@ -202,6 +202,41 @@ namespace jsTaskRunner.Test
                             req.end();
                             });
                         }   
+                ",
+                JavascriptCodeIdentifier = "HttpCallJavascriptExample",
+                Args = new object[] { }
+            };
+
+            // Act
+            var result = await _sut.RunAsync(jsRunnerParams);
+
+            // Assert
+            result.Should().NotBeNull();
+
+            result.ToString().Should().Be(expectedResult);
+        }
+
+        [Fact]
+        public async Task Must_BeAbleToMakeHTTPCallsAsync_From_HttpRequestLibrary()
+        {
+            // Arrange
+            var expectedResult = "{\"userId\":1,\"id\":2,\"title\":\"qui est esse\",\"body\":\"est rerum tempore vitae\\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\\nqui aperiam non debitis possimus qui neque nisi nulla\"}";
+
+            var jsRunnerParams = new JsRunnerParams
+            {
+                JavascriptCode = @"
+                    module.exports = async () => {
+                        var httpRequest = require('./httpRequest.js');
+
+                        var params = {
+                            host: 'jsonplaceholder.typicode.com',
+                            port: 80,
+                            method: 'GET',
+                            path: '/posts/2'
+                        };
+
+                        return httpRequest(params);
+                    }
                 ",
                 JavascriptCodeIdentifier = "HttpCallJavascriptExample",
                 Args = new object[] { }
