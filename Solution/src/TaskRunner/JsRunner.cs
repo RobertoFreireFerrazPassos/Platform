@@ -9,6 +9,8 @@ namespace TaskRunner
         public string JavascriptCodeIdentifier { get; set; }
 
         public object?[]? Args { get; set; }
+
+        public int TimeOut { get; set; } = 10;
     }   
 
     public class JsRunner : IJsRunner
@@ -17,9 +19,7 @@ namespace TaskRunner
         {
             var cancellationTokenSource = new CancellationTokenSource();
 
-            var timeOut = 10;
-
-            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(timeOut));
+            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(parameters.TimeOut));
 
             try
             {
@@ -34,7 +34,7 @@ namespace TaskRunner
             {
                 var exceptionMessage = RemoveStringAfter(ex.Message, "ReferenceError:").TrimEnd();
 
-                var canceledExceptionMessage = $" It tooks more than {timeOut} seconds";
+                var canceledExceptionMessage = $" It took more than {parameters.TimeOut} seconds";
 
                 throw new JsRunnerException(exceptionMessage + canceledExceptionMessage);
             }

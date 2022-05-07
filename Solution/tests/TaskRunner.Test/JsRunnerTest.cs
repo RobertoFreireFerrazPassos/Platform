@@ -94,7 +94,9 @@ namespace jsTaskRunner.Test
         public async Task When_TakesTooLong_Must_Cancel()
         {
             // Arrange  
-            var expectedExceptionMessage = "The operation was canceled. It tooks more than 10 seconds";
+            var timeOut = 3;
+
+            var expectedExceptionMessage = $"The operation was canceled. It took more than {timeOut} seconds";
 
             var jsRunnerParams = new JsRunnerParams
             {
@@ -106,11 +108,12 @@ namespace jsTaskRunner.Test
                         currentDate = Date.now();
                       } while (currentDate - date < milliseconds);
                     }
-                    sleep(12000);
+                    sleep(4000);
                     output = 10;
                 "),
                 JavascriptCodeIdentifier = "OperationCanceledJavascript",
-                Args = new object[] { }
+                Args = new object[] { },
+                TimeOut = timeOut
             };
 
             // Act
