@@ -306,15 +306,13 @@ namespace jsTaskRunner.Test
                             host: 'jsonplaceholder.typicode.com',
                             port: 80,
                             method: 'POST',
-                            body: JSON.stringify({
+                            body: {
                                 title: 'foo',
                                 body: 'bar',
                                 userId: 1,
-                              }),
-                            path: '/posts',
-                            headers: {
-                                'Content-type': 'application/json; charset=UTF-8',
                               },
+                            path: '/posts',
+                            headers: { 'Content-type': 'application/json; charset=UTF-8' },
                         };
 
                          return await httpRequest(params);

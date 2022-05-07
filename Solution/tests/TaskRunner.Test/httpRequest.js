@@ -23,6 +23,11 @@ module.exports = async (params) => {
             });
         });
 
+        if (params.method == 'POST')
+        {
+            req.write(JSON.stringify(params.body));
+        }
+
         // reject on request error
         req.on('error', function (err) {
             reject(err);
