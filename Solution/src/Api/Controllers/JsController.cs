@@ -11,16 +11,10 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class JsController : ControllerBase
     {
-        private readonly ILogger<JsController> _logger;
-
         private readonly IJsService _jsService;
 
-        public JsController(
-                ILogger<JsController> logger,
-                IJsService jsService
-            )
+        public JsController(IJsService jsService)
         {
-            _logger = logger;
             _jsService = jsService;
         }
 
@@ -33,26 +27,21 @@ namespace Api.Controllers
         }
 
         [HttpGet("{javaScriptIdentifier}/Run")]
-        public async Task<IActionResult> Run([FromQuery] string javaScriptIdentifier)
+        public async Task<IActionResult> Run(string javaScriptIdentifier)
         {
-
-            return Ok();
+            return Ok(_jsService.Run(javaScriptIdentifier).Result);
         }
 
         [HttpGet("{javaScriptIdentifier}/Get")]
         public async Task<IActionResult> Get(string javaScriptIdentifier)
         {
-            var jsFile = _jsService.Get(javaScriptIdentifier);
-
-            return Ok(jsFile);
+            return Ok(_jsService.Get(javaScriptIdentifier).Result);
         }
 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
-            var jsFileList = _jsService.GetAll();
-
-            return Ok(jsFileList);
+            return Ok(_jsService.GetAll().Result);
         }
     }
 }

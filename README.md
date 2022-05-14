@@ -3,10 +3,9 @@
 ## Test
 
 Create a JS File
-
 ``` json
 {
-  "javascriptCode": "function sleep(milliseconds) {\n const date = Date.now();\n let currentDate = null;\n do {\n currentDate = Date.now();\n } while (currentDate - date < milliseconds);\n }"
+  "javascriptCode": "output = 10 + 8;"
 }
 ```
 
