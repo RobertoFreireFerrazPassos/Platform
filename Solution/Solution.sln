@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskRunner.Test", "tests\Ta
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskRunner", "src\TaskRunner\TaskRunner.csproj", "{5A681653-C44C-4777-8080-6605DB078491}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\Api\Api.csproj", "{5B3DB3D4-528B-4E1C-A703-06FFDA46075F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{5A681653-C44C-4777-8080-6605DB078491}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A681653-C44C-4777-8080-6605DB078491}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A681653-C44C-4777-8080-6605DB078491}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B3DB3D4-528B-4E1C-A703-06FFDA46075F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B3DB3D4-528B-4E1C-A703-06FFDA46075F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B3DB3D4-528B-4E1C-A703-06FFDA46075F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B3DB3D4-528B-4E1C-A703-06FFDA46075F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -34,6 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{725610D0-2840-4E48-9379-C029FAA989FC} = {3B898E2A-750B-491E-BB9E-70480FC51848}
 		{5A681653-C44C-4777-8080-6605DB078491} = {ABD3893F-279E-4AAE-AB3D-12EBB193E758}
+		{5B3DB3D4-528B-4E1C-A703-06FFDA46075F} = {3AB274BF-098B-402F-A8B5-7866FAA371B0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9DFAE2F3-152A-4069-B1A2-8EB930733ABD}

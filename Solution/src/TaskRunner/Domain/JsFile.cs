@@ -4,9 +4,30 @@ namespace TaskRunner.Domain
 {
     public class JsFile : IJsFile
     {
+        public int Id { get; set; }
         public string JavascriptCode { get; set; }
-
         public string JavascriptCodeIdentifier { get; set; }
+
+        public void SetJavascriptCodeIdentifier()
+        {
+            if (!string.IsNullOrEmpty(JavascriptCodeIdentifier)) 
+            {
+                throw new Exception("JavascriptCodeIdentifier already set");
+            }
+
+            JavascriptCodeIdentifier = (new DateTime()).ToShortDateString() + RandomString(16);
+
+            static string RandomString(int length)
+            {
+                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+                var random = new Random();
+
+                return new string(Enumerable.Repeat(chars, length)
+                    .Select(s => s[random.Next(s.Length)])
+                    .ToArray());
+            }
+        }
 
         public bool IsValidJavascriptCode()
         {

@@ -1,19 +1,14 @@
 # Platform
 
-## Flow
+## Test
 
-Saving new javascript (js)
+Create a JS File
 
--> Validate js
-
--> Save in database by organization
-
-Running js
-
--> Get from database
-
--> Run in backend
-
+``` json
+{
+  "javascriptCode": "function sleep(milliseconds) {\n const date = Date.now();\n let currentDate = null;\n do {\n currentDate = Date.now();\n } while (currentDate - date < milliseconds);\n }"
+}
+```
 
 # next steps
 
